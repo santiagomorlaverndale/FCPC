@@ -1,0 +1,135 @@
+﻿@model FormModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+
+    <h1 class="display-4">Simulación de Votación de FCPC DAC</h1>
+    @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
+
+    <h4>@Model.Name</h4>
+    <h5>@Model.Id</h5>
+    <hr />
+    <div class="row d-flex justify-content-center col-12">
+        <div class="col-sm-6 rounded m-20">
+
+            <form id="vote" method="post" asp-action="Submit">
+                <input type="hidden" value="@Model.Id" name="Id" id="Id" />
+                <input type="hidden" value="0" name="VoteNull" id="VoteNull" />
+                @foreach (var candidate in Model.Candidates)
+                {
+                <div class="form-group" style="text-align: left;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="Candidate" id="id-@candidate.CandidateId" value="@candidate.CandidateId" data-name="@candidate.FirstName @candidate.LastName" required>
+                        <img src="@candidate.Photo" alt="@candidate.FirstName @candidate.LastName" class="img-thumbnail img-candidate">
+                        <label class="form-check-label" for="id-@candidate.CandidateId">
+                            @candidate.FirstName @candidate.LastName
+                        </label>
+                    </div>
+                </div>
+                }
+                <br />
+
+                <hr />
+                <div class="container">
+                    <div class="row">
+                        <div class="col text-center">
+                            <div class="form-group">
+                                <button type="button" id="submitBtn" class="btn btn-lg btn-primary btn-block" data-toggle="modal" data-target="#confirm-submit">Votar</button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" id="submitBtn1" class="btn btn-lg btn-danger btn-block" data-toggle="modal" data-target="#confirm-submit1">Votar NULO</button>
+                            </div>
+                            <div class="form-group">
+                                <span class="small float-right">Número de representantes: <span id="selectedItems">0</span> de @Model.Limit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Confirmar Votación
+            </div>
+            <div class="modal-body" id="candidato">
+                Está seguro de votar por el candidato seleccionado?
+
+                <!-- We display the details entered by the user here -->
+                <table class="table">
+                    <tr>
+                        <th>Candidato(s):</th>
+                        <td id="lname"></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-body" id="blanco">
+                <!-- We display the details entered by the user here -->
+                <table class="table">
+                    <tr>
+                        <th>Está seguro de votar en BLANCO</th>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="submit" class="btn btn-primary success">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="confirm-submit1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Confirmar Votación
+            </div>
+            <div class="modal-body" id="nulo">
+                <!-- We display the details entered by the user here -->
+                <table class="table">
+                    <tr>
+                        <th>Está seguro de votar NULO</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" id="submit1" class="btn btn-primary success">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+
+
+        jQuery("[name='Candidate']").change(function (e) {
+            
+            if ($("[name='Candidate']:checked").length > @Model.Limit) {
+                $(this).prop('checked', false);
+                if (@Model.Limit === 1) {
+                    alert("Se permite máximo 1 candidato seleccionado");
+                } else {
+                    alert("Se permite máximo " + @Model.Limit + " candidatos seleccionados");
+                }
+            }
+            var selected = $("[name='Candidate']:checked").length;
+            jQuery('#selectedItems').text(selected);
+        });
+
+    </script>
+}

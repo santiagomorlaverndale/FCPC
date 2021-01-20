@@ -1,0 +1,41 @@
+﻿@model AuthenticateModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section>
+    <div class="row d-flex justify-content-center col-12">
+        <div class="col-sm-4 rounded m-20">
+            <form id="account" method="post" class="py-5">
+                @Html.AntiForgeryToken()
+
+                <div class="d-flex justify-content-center" style="height: 100px;">
+                    <img src="~/img/daclogo.png" class="img-fluid" />
+                    @*<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>*@
+
+
+                </div>
+                @*<div asp-validation-summary="All" class="text-danger"></div>*@
+                <br />
+                <br />
+                <div class="form-group ">
+                    <input asp-for="Username" class="form-control" placeholder="Cédula de Identidad" required autofocus />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group ">
+                    <input asp-for="Password" class="form-control" type="password" placeholder="Contraseña" required />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <i class="icon-map-marker icon-4x text-success"></i>
+
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-lg btn-dark btn-block">Iniciar sesión</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+

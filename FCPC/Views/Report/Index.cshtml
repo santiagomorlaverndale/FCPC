@@ -1,0 +1,183 @@
+﻿@using System.Web
+@model GeneralModel
+@{
+    ViewData["Title"] = "Reporte";
+    var cont = 1;
+}
+
+<h1>Resultados Generales</h1>
+<section>
+    <h2>Votaciones</h2>
+
+    @foreach(var res in Model.Results)
+    {
+        cont = 1;
+        if (res.Results.Count == 0)
+        {
+            continue;
+        }
+
+    <a class="" data-toggle="collapse" href="#region-@res.Region.RegionId" role="button" aria-expanded="false" aria-controls="region-@res.Region.RegionId">
+        <h3>Región: @res.Region.Name</h3>
+    </a>
+
+    <div class="collapse" id="region-@res.Region.RegionId">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Documento</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Votación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in res.Results)
+        {
+                <tr>
+                    <th scope="row">@cont</th>
+                    <td>@item.User.UserId</td>
+                    <td>@item.User.FirstName @item.User.LastName</td>
+                    <td>@item.Vote.Date</td>
+                    @if (item.Candidate == null)
+                    {
+                        <td>NULO</td>
+                    }
+                    else
+                    {
+                        <td>@item.Candidate.FirstName @item.Candidate.LastName</td>
+                    }
+                   
+                </tr>
+            cont++;
+        }
+            </tbody>
+        </table>
+    </div>
+            }
+
+
+</section>
+<hr />
+@{
+    cont = 1;
+}
+<section>
+    <h2>Resultados</h2>
+
+    @*<div id="canvas-holder" style="width:40%">
+            <canvas id="myChart"></canvas>
+        </div>*@
+
+    @foreach (var res in Model.Results)
+    {
+        if (res.Results.Count == 0)
+        {
+            continue;
+        }
+    <h2>Región: @res.Region.Name</h2>
+    <div id="canvas-holder" style="width: 40%">
+        <canvas id="pieChart@(res.Region.RegionId)"></canvas>
+    </div>
+    }
+
+    <script>
+        @foreach (var res in Model.Results)
+        {
+            if (res.Results.Count == 0)
+            {
+                continue;
+            }
+            ChartJSCore.Models.Chart chart1 = (ChartJSCore.Models.Chart)ViewData["chart" + res.Region.RegionId];
+            @Html.Raw(chart1.CreateChartCode("pieChart" + res.Region.RegionId));
+        }
+    </script>
+
+    @foreach (var res in Model.Results)
+    {
+        cont = 1;
+        if (res.Results.Count == 0)
+        {
+            continue;
+        }
+    <a class="" data-toggle="collapse" href="#result-@res.Region.RegionId" role="button" aria-expanded="false" aria-controls="result-@res.Region.RegionId">
+        <h3>Región: @res.Region.Name</h3>
+    </a>
+    <div class="collapse" id="result-@res.Region.RegionId">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col"># Votos</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in res.Votes)
+        {
+                <tr>
+                    <th scope="row">@cont</th>
+                    @if (item.Candidate == null)
+                    {
+                        <td>NULO</td>
+                    }
+                    else
+                    {
+                        <td>@item.Candidate.FirstName @item.Candidate.LastName</td>
+                    }
+                    <td>@item.Vote</td>
+                </tr>
+            cont++;
+        }
+            </tbody>
+        </table>
+    </div>
+        }
+    
+    
+    @{
+        var consolidado = Model.Results.SelectMany(x => x.Votes);
+        cont = 1;
+    }
+    
+    <a class="" data-toggle="collapse" href="#consolidado" role="button" aria-expanded="false" aria-controls="consolidado">
+        <h3>Consolidado</h3>
+    </a>
+    
+        <div class="collapse" id="consolidado">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col"># Votos</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in consolidado)
+                {
+                    <tr>
+                        <th scope="row">@cont</th>
+                        @if (item.Candidate == null)
+                        {
+                            <td>NULO</td>
+                        }
+                        else
+                        {
+                            <td>@item.Candidate.FirstName @item.Candidate.LastName</td>
+                        }
+                        <td>@item.Vote</td>
+                    </tr>
+                    cont++;
+                }
+                </tbody>
+            </table>
+        </div>
+   
+</section>
+
+@using (Html.BeginForm("Csv", "Report", FormMethod.Post))
+{
+<input type="submit" id="btnSubmit" value="Exportar" />
+}

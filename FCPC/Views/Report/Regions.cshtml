@@ -1,0 +1,78 @@
+﻿@using System.Web
+@model ResultsModel
+@{
+    ViewData["Title"] = "Reporte";
+    var cont = 1;
+}
+
+<h1>Resultados Generales</h1>
+<section>
+    <h2>Votaciones</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Documento</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Votación</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Results)
+            {
+            <tr>
+                <th scope="row">@cont</th>
+                <td>@item.User.UserId</td>
+                <td>@item.User.FirstName @item.User.LastName</td>
+                <td>@item.Vote.Date</td>
+                <td>@item.Candidate.FirstName @item.Candidate.LastName</td>
+            </tr>
+                cont++;
+            }
+        </tbody>
+    </table>
+</section>
+<hr />
+@{
+    cont = 1;
+}
+<section>
+    <h2>Resultados</h2>
+
+    @*<div id="canvas-holder" style="width:40%">
+            <canvas id="myChart"></canvas>
+        </div>*@
+
+    <div id="canvas-holder" style="width: 40%">
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    @{ChartJSCore.Models.Chart chart = (ChartJSCore.Models.Chart)ViewData["chart"]; }
+
+    <script>
+            @Html.Raw(chart.CreateChartCode("pieChart"));
+    </script>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nombre</th>
+                <th scope="col"># Votos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Votes)
+            {
+                <tr>
+                    <th scope="row">@cont</th>
+                    <td>@item.Candidate.FirstName @item.Candidate.LastName</td>
+                    <td>@item.Vote</td>
+                </tr>
+                cont++;
+            }
+        </tbody>
+    </table>
+</section>
